@@ -1,10 +1,10 @@
 var express = require('express');
 //indica que requiere express
 var router = express.Router();
-// router es el que me indica todas las rutas
+// router es el que me indica todas las rutas,direcciones,asocia rutas con funciones
 /* GET home page. */
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
-//req=request petición , res=responsive respuesta, next=siguiente
+//req=request petición , res=response respuesta, next=siguiente
 router.get('/', function(req, res, next) {
   const products = [
     {nombre:"Microondas", precio:45, existencias:6},
