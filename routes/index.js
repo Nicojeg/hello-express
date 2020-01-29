@@ -7,12 +7,12 @@ var router = express.Router();
 //req=request petición , res=response respuesta, next=siguiente
 router.get('/', function(req, res, next) {
   const products = [
-    {nombre:"Microondas", precio:45, existencias:6},
-    {nombre:"frigorífico", precio:200, existencias:4},
-    {nombre:"lámpara", precio:20, existencias:14},
-    {nombre:"tv",precio:90, existencias:0},
-    {nombre:"lavadora",precio:290,existencias:3},
-    {nombre:"secadora",precio:180, existencias:5}
+    {nombre:"Microondas", precio:45, existencias:6, imagen:"microondas.jpg"},
+    {nombre:"frigorífico", precio:2500, existencias:4, imagen:"frigo.jpg"},
+    {nombre:"lámpara", precio:20, existencias:14, imagen:"lampara.jpg"},
+    {nombre:"tv",precio:500, existencias:0, imagen:"tv.jpg"},
+    {nombre:"lavadora",precio:290,existencias:3, imagen: "lavadora.jpg"},
+    {nombre:"secadora",precio:180, existencias:5, imagen: "secadora.jpg"}
   ];
   //respondeme con el render(dibujo en html)
   res.render('index', { title: 'Silverado', products });
