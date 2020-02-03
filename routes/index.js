@@ -8,9 +8,9 @@ var users = require('../models/users.js');
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
 //req=request petición , res=response respuesta, next=siguiente
 router.get('/', function(req, res, next) {
-  
+  const usuario =req.session.user;
   //respondeme con el render(dibujo en html)
-  res.render('index', { title: 'Silverado', products });  
+  res.render('index', { title: 'Silverado', usuario,  products });  
 });
 //hacemos una ruta que es variable y requerimos de la lista de los productos por su referencia
 //busco el producto que coincide con la referencia ref
@@ -64,7 +64,9 @@ router.post("/comprar", function(req, res, next){
       return (u.usuario == usuario && u.password == password);
     
     });
-    if (user){
+    if (user){req.session.user =usuario;
+      //generar la cookie
+      
       res.redirect("/");
     }else{
       //meter un mensaje de error en pantalla
