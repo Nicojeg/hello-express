@@ -18,7 +18,7 @@
           <h3><%= product.precio %>€</h3>
           <!-- se activa el boton comprar y dirige al archivo products y escoge por referencia ref -->
          <form action="/comprar"method="post">
-            <input type="hidden" name="ref" value="<%= product.ref %>">
+            <input type="hidden" name="referencia" value="<%= product.referencia %>">
             <input class="btn btn-primary"type="submit" value="Comprar">
          </form>
          <!-- <a href="/products/<%= product.ref %>" class="btn btn-primary">Comprar</a> -->

@@ -1,8 +1,10 @@
 var express = require('express');
 //indica que requiere express
 var router = express.Router();
-var products = require("../models/products.js");
+
 var users = require('../models/users.js');
+
+const {Producto} =require('../models');
 // router es el que me indica todas las rutas,direcciones,asocia rutas con funciones
 /* GET home page. */
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
@@ -10,26 +12,29 @@ var users = require('../models/users.js');
 router.get('/', function(req, res, next) {
   const usuario =req.session.user;
   //respondeme con el render(dibujo en html)
-  res.render('index', { title: 'Silverado', usuario,  products });  
+  Producto.findAll().then(products=>{
+    res.render('index', { title: 'Silverado', usuario,  products });
+  })   
 });
 //hacemos una ruta que es variable y requerimos de la lista de los productos por su referencia
 //busco el producto que coincide con la referencia ref
 router.get('/products/:ref', function(req, res, next) {
   var ref = req.params.ref;
-  
-  const product = products.find(function(p){
-    return p.ref==ref;
+  Producto.findOne({
+    where: {referencia: ref}
+  })
+  .then(product =>{
+    if (product){
+    //con el render pasamos  los productos {product} a la plantilla 'product'
+      res.render ('product', {product});
+    }else{
+      //si no existe ese preducto me redirecciona a la página de error
+      res.redirect("/error");
+    }
   });
 
-  
-  if (product){
-  //con el render pasamos  los productos {product} a la plantilla 'product'
-    res.render ('product', {product});
-  }else{
-    //si no existe ese preducto me redirecciona a la página de error
-    res.redirect("/error");
-  }
-});
+})
+
 
 var cesta =[]; //provisional
 
