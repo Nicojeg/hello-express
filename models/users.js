@@ -3,15 +3,11 @@ const Sequelize = require('sequelize');
 
 const Usuario = sequelize.define('users', {
     
-    email: Sequelize.STRING,
-    password:Sequelize.STRING,
-    nombre: Sequelize.STRING,
-    apellidos: Sequelize.STRING
+    email: {type:Sequelize.STRING(100),allowNull:false, unique:true},
+    password:Sequelize.STRING(40),
+    nombre: Sequelize.STRING(50),
+    apellidos: Sequelize.STRING(80)
     
   });  
 module.exports=Usuario;
-/*module.exports = [
-    {usuario:"jairo", password:"123456"},
-    {usuario:"pepito", password:"654321"},
-    {usuario:"Nico", password:"121212"}
-];*/
+
