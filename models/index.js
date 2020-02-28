@@ -5,7 +5,7 @@ const Usuario = require('./users')
 const Carrito = require('./carrito')
 const Pedido = require('./pedido')
 const ProductoCarrito = require('./producto-carrito')
-
+const ProductoPedido = require('./producto-pedido')
  
 Usuario.hasOne(Carrito);
 Carrito.belongsTo(Usuario);
@@ -15,6 +15,9 @@ Pedido.belongsTo(Usuario);
 
 Carrito.belongsToMany(Producto,{through:ProductoCarrito});
 Producto.belongsToMany(Carrito,{through:ProductoCarrito});
+
+Pedido.belongsToMany(Producto,{through:ProductoPedido});
+Producto.belongsToMany(Pedido,{through:ProductoPedido});
 
 
 
