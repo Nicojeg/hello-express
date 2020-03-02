@@ -64,20 +64,20 @@ router.post("/comprar", function(req, res, next){
   /**const usuario = req.body.usuario;
    const password = req.body.password;*/
   /** sería lo mismo que hacer de esta otra manera */
-    const {usuario, password} = req.body;
-    const user = users.find(function (u) {
-      return (u.usuario == usuario && u.password == password);
-    
+    const {email, password} = req.body;//en body tengo los datos del login
+    Usuario.findOne({where:{email,password}})
+    .then(usuario=>{
+      if (usuario){
+        req.session.usuarioID=usuarioID;
+        //generar la cookie 
+        res.redirect("/");
+      }else{
+        //meter un mensaje de error en pantalla
+        res.render("login");
+      }
+    })
     });
-    if (user){req.session.user =usuario;
-      //generar la cookie
-      
-      res.redirect("/");
-    }else{
-      //meter un mensaje de error en pantalla
-      res.render("login");
-    }
-  });
+  
   router.get("/registro", function(req,res,next){
     res.render("registro");
   });
