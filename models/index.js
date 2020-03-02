@@ -32,7 +32,7 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });
  
-  module.exports ={//exportaciones
+  module.exports ={
       Producto,
       Usuario,
       Carrito,

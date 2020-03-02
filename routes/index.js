@@ -4,7 +4,7 @@ var router = express.Router();
 
 var users = require('../models/users.js');
 
-const {Producto} =require('../models');
+const {Producto,Usuario} =require('../models');//requerimos desde models producto y usuario
 // router es el que me indica todas las rutas,direcciones,asocia rutas con funciones
 /* GET home page. */
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
@@ -78,7 +78,24 @@ router.post("/comprar", function(req, res, next){
       res.render("login");
     }
   });
+  router.get("/registro", function(req,res,next){
+    res.render("registro");
+  });
 
+  router.post("/registro", function (req, res, next){
+    const datos = req.body;
+     
+      if (datos.password ==datos.repassword){
+      Usuario.create(datos)
+      .then(usuario=>{
+        res.redirect("/login");
+      });
+     
+    }else{
+      res.redirect("/registro");
+    }
+  }); 
+  
 
 module.exports = router;
 
