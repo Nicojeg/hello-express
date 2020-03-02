@@ -61,9 +61,7 @@ router.post("/comprar", function(req, res, next){
    */
 
   router.post("/login", function (req, res, next){
-  /**const usuario = req.body.usuario;
-   const password = req.body.password;*/
-  /** sería lo mismo que hacer de esta otra manera */
+  
     const {email, password} = req.body;//en body tengo los datos del login
     Usuario.findOne({where:{email,password}})
     .then(usuario=>{
