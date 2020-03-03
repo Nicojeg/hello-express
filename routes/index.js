@@ -77,20 +77,35 @@ router.post("/comprar", function(req, res, next){
     });
   
   router.get("/registro", function(req,res,next){
-    res.render("registro");
+    res.render("registro",{error:undefined,datos:{}}); //error indefinido y datos en vacio, para que me de la posibilidad
   });
 
   router.post("/registro", function (req, res, next){
     const datos = req.body;
-     
-      if (datos.password ==datos.repassword){
+      if(datos.nombre.length == 0 ){
+        res.render("registro",{datos, error:"Nombre no puede estar vacio"});
+      }
+      else if(datos.apellidos.length == 0 ){
+        res.render("registro",{datos, error:"Apellidos no puede estar vacio"});
+      }
+      else if(datos.email.length == 0 ){
+        res.render("registro",{datos, error:"Email no puede estar vacio"});
+      }
+      else if(!/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/.test(datos.email)){
+        res.render("registro",{datos,error:"Email no válido"});
+      }
+      else if(datos.password.length < 6 ){
+        res.render("registro",{datos, error:"Password ha de tener al menos 6 caracteres"});
+      }
+      else if (datos.password != datos.repassword){
+        res.render("registro", {datos, error:"Los dos password no coinciden"});
+      
       Usuario.create(datos)
       .then(usuario=>{
         res.redirect("/login");
       });
      
-    }else{
-      res.redirect("/registro");
+    
     }
   }); 
   
