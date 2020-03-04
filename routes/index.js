@@ -4,7 +4,7 @@ var router = express.Router();
 
 var users = require('../models/users.js');
 
-const {Producto,Usuario} =require('../models');//requerimos desde models producto y usuario
+const {Producto,Usuario,Carrito} =require('../models');//requerimos desde models producto y usuario
 // router es el que me indica todas las rutas,direcciones,asocia rutas con funciones
 /* GET home page. */
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
@@ -28,7 +28,7 @@ router.get('/products/:ref', function(req, res, next) {
     //con el render pasamos  los productos {product} a la plantilla 'product'
       res.render ('product', {product});
     }else{
-      //si no existe ese preducto me redirecciona a la página de error
+      //si no existe ese producto me redirecciona a la página de error
       res.redirect("/error");
     }
   });
@@ -39,16 +39,28 @@ router.get('/products/:ref', function(req, res, next) {
 var cesta =[]; //provisional
 
 router.post("/comprar", function(req, res, next){
-    const ref =req.body.ref;
-    const product = products.find(function(p){
-      return p.ref==ref;
+    const referencia =req.body.referencia;
+    Producto.findOne({where:{referencia}})
+    .then(producto=>{
+      if(producto){
+        const userId = req.session.userId;
+        if(!userId) res.redirect("/login");
+        Carrito.findOrCreate({where: {userId},defaults: {userId}})
+        .then(([carrito, created])=>{
+         carrito.addProducto(producto)
+         .then(()=>{
+           res.redirect("/");
+         })
+        })
+      }else{
+        res.render("error",{message:"No existe el producto solicitado"});
+      }
+         
     });
 
- //añadimos producto a la cesta
-  cesta.push(product);
- //redirigimos a página de productos
- res.redirect("/");
  });
+
+
  router.get("/login", function (req, res, next){
  //cuando se pregunte por login tiene que hacer la función
    res.render("login");
@@ -66,7 +78,7 @@ router.post("/comprar", function(req, res, next){
     Usuario.findOne({where:{email,password}})
     .then(usuario=>{
       if (usuario){
-        req.session.usuarioID=usuarioID;
+        req.session.userId=usuario.id;
         //generar la cookie 
         res.redirect("/");
       }else{
@@ -108,7 +120,9 @@ router.post("/comprar", function(req, res, next){
     
     }
   }); 
-  
+  router.get("/carrito", function(req,res,next){
+    res.render("carrito");
+  })
 
 module.exports = router;
 
