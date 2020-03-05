@@ -45,12 +45,21 @@ router.post("/comprar", function(req, res, next){
       if(producto){
         const userId = req.session.userId;
         if(!userId) res.redirect("/login");
-        Carrito.findOrCreate({where: {userId},defaults: {userId}})
+        Carrito.findOrCreate({where: {userId},include:[Producto], defaults: {userId}})
         .then(([carrito, created])=>{
-         carrito.addProducto(producto)
-         .then(()=>{
-           res.redirect("/");
-         })
+          var productos = carrito.productos;
+          var p = productos.find(p => p.referencia==referencia);
+          if (p){
+            p.productocarrito.increment({cantidad:1})
+            .then(()=>{res.redirect("/")
+          });
+          }else{
+            carrito.addProducto(producto)
+            .then(()=>{
+              res.redirect("/");
+            })
+          }
+         
         })
       }else{
         res.render("error",{message:"No existe el producto solicitado"});
@@ -114,6 +123,7 @@ router.post("/comprar", function(req, res, next){
       
       Usuario.create(datos)
       .then(usuario=>{
+        
         res.redirect("/login");
       });
      
@@ -121,7 +131,16 @@ router.post("/comprar", function(req, res, next){
     }
   }); 
   router.get("/carrito", function(req,res,next){
-    res.render("carrito");
+    const userId = req.session.userId;
+    if(!userId) res.redirect("/login");
+    else{
+      Carrito.findOne({where:{userId},include:[Producto]})
+      .then(carrito=>{
+        var productos =carrito.productos;
+        res.render("carrito",{productos});
+      });
+    }
+    
   })
 
 module.exports = router;
