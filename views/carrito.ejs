@@ -11,9 +11,9 @@
     .tftable td {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;}
     .tftable tr:hover {background-color:#ffffff;}
     .boton {
-border: 1px solid #2e518b; /*anchura, estilo y color borde*/
+border: 1px solid #2e8b67; /*anchura, estilo y color borde*/
 padding: 10px; /*espacio alrededor texto*/
-background-color: #274a83; /*color botón*/
+background-color: #71a0ec; /*color botón*/
 color: #ffffff; /*color texto*/
 text-decoration: none; /*decoración texto*/
 text-transform: uppercase; /*capitalización texto*/
@@ -38,7 +38,15 @@ margin-left: 300px;
             <td><%= productos[i].precio %></td>
             <td><%= productos[i].productocarrito.cantidad*productos[i].precio %></td>
         </tr>
+        
         <% } %>
+        
+        <tr>
+            <th colspan="4">Total</th>               
+            <th><%=total%></th>
+        </tr>
+           
+        
         </table>
         <div>
             <form method="post" action="/checkout">
@@ -51,6 +59,7 @@ margin-left: 300px;
             
             </form>
         </div>  
-        </body>
+        
+        
 </body>
 </html>                                		                            
