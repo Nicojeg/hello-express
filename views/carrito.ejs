@@ -22,6 +22,7 @@ border-radius: 50px; /*bordes redondos*/
 float:left;
 margin-left: 300px;
 }
+     .error td {background-color:  #ff3300 ;}
     </style>
 
 </head>
@@ -31,18 +32,25 @@ margin-left: 300px;
         <table class="tftable" border="1">
         <tr><th>referencia</th><th>nombre</th><th>unidades</th><th>Precio unidad</th><th>Subtotal</th></tr>
         <% for(var i = 0;i < productos.length;i++) { %>
-        <tr>
-            <td><%= productos[i].referencia %></td>
-            <td><%= productos[i].nombre %></td>
-            <td><%= productos[i].productocarrito.cantidad%></td>
-            <td><%= productos[i].precio %></td>
-            <td><%= productos[i].productocarrito.cantidad*productos[i].precio %></td>
-        </tr>
-        
+            <% if (productos[i].hayExistencias ==false){%>}
+                <tr>
+                    <td>Referencia</td>
+                    <td>Nombre</td>
+                    <td class="error" colspan="4">NO HAY SUFICIENTES EXISTENCIAS</td>
+                </tr>
+            <% }else{%>            
+                <tr>
+                    <td><%= productos[i].referencia %></td>
+                    <td><%= productos[i].nombre %></td>
+                    <td><%= productos[i].productocarrito.cantidad%></td>
+                    <td><%= productos[i].precio %></td>
+                    <td><%= productos[i].productocarrito.cantidad*productos[i].precio %></td>
+                </tr>
+            <% } %>
         <% } %>
         
         <tr>
-            <th colspan="4">TOTAL</th>               
+            <th  colspan="4">TOTAL</th>               
             <th><%=total%></th>
         </tr>
            
@@ -55,11 +63,10 @@ margin-left: 300px;
             </form> -->
         </div>
         <div>
-            <a class="boton" href="/checkout">Finalizar pedido</a>
-  <!--          <form  method="post" action="/checkout">
+           <form  method="post" action="/checkout">
             <input class="boton" type="submit" value="Finalizar pedido">
             
-            </form>-->
+            </form>
         </div>  
         
         

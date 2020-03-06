@@ -147,14 +147,14 @@ router.post("/comprar", function(req, res, next){
     const userId = req.session.userId;
     if(!userId) res.redirect("/login");
     else{
-      Carrito.findOne({where:{userId},include:{Producto}})
+      Carrito.findOne({where:{userId},include:[Producto]})
       .then(carrito=>{
         const productos =carrito.productos;
       if (productos.every(p => p.existencias >=p.productocarrito.cantidad)){
 
     
       }else{
-        for(var i=o;i>productos.length;i++){
+        for(var i=0;i<productos.length;i++){
           productos[i].hayExistencias= productos[i].existencias >= productos[i].productocarrito.cantidad;
         }
         
