@@ -51,12 +51,12 @@ router.post("/comprar", function(req, res, next){
           var p = productos.find(p => p.referencia==referencia);
           if (p){
             p.productocarrito.increment({cantidad:1})
-            .then(()=>{res.redirect("/")
+            .then(()=>{res.redirect("/carrito")
           });
           }else{
             carrito.addProducto(producto)
             .then(()=>{
-              res.redirect("/");
+              res.redirect("/carrito");
             })
           }
          
@@ -143,6 +143,28 @@ router.post("/comprar", function(req, res, next){
     }
     
   });
+   router.post("/checkout", function(req,res,next){
+    const userId = req.session.userId;
+    if(!userId) res.redirect("/login");
+    else{
+      Carrito.findOne({where:{userId},include:{Producto}})
+      .then(carrito=>{
+        const productos =carrito.productos;
+      if (productos.every(p => p.existencias >=p.productocarrito.cantidad)){
 
+    
+      }else{
+        for(var i=o;i>productos.length;i++){
+          productos[i].hayExistencias= productos[i].existencias >= productos[i].productocarrito.cantidad;
+        }
+        
+        const total = productos.reduce((total, p) => total + p.precio * p.productocarrito.cantidad, 0);
+    res.render("carrito",{productos,total});
+           }
+       } 
+    )
+
+    }
+   });
 module.exports = router;
 

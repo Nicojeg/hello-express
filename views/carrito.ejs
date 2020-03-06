@@ -42,22 +42,24 @@ margin-left: 300px;
         <% } %>
         
         <tr>
-            <th colspan="4">Total</th>               
+            <th colspan="4">TOTAL</th>               
             <th><%=total%></th>
         </tr>
            
         
         </table>
         <div>
-            <form method="post" action="/checkout">
+            <a class="boton" href="/">Seguir comprando</a>
+<!--            <form method="get" action="/">
                 <input class="boton" type="submit" value="Seguir comprando">
-            </form>
+            </form> -->
         </div>
         <div>
-            <form  method="post" action="/">
+            <a class="boton" href="/checkout">Finalizar pedido</a>
+  <!--          <form  method="post" action="/checkout">
             <input class="boton" type="submit" value="Finalizar pedido">
             
-            </form>
+            </form>-->
         </div>  
         
         
