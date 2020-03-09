@@ -33,10 +33,9 @@ sequelize
   });
  
   module.exports ={
+      sequelize, //para que tenga en cuenta las transacciones
       Producto,
       Usuario,
       Carrito,
-      Pedido
-      
-      
+      Pedido    
   }

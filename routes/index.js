@@ -4,7 +4,7 @@ var router = express.Router();
 
 var users = require('../models/users.js');
 
-const {Producto,Usuario,Carrito} =require('../models');//requerimos desde models producto y usuario
+const {Producto,Usuario,Carrito,Pedido,sequelize} =require('../models');//requerimos desde models producto y usuario
 // router es el que me indica todas las rutas,direcciones,asocia rutas con funciones
 /* GET home page. */
 //cada vez que le pida router por get me aplica esa función, separo todas las rutas en funciones
@@ -120,15 +120,15 @@ router.post("/comprar", function(req, res, next){
       }
       else if (datos.password != datos.repassword){
         res.render("registro", {datos, error:"Los dos password no coinciden"});
+      } else {
+        Usuario.create(datos)
+        .then(usuario=>{
+          
+          res.redirect("/login");
+        });
       
-      Usuario.create(datos)
-      .then(usuario=>{
-        
-        res.redirect("/login");
-      });
-     
     
-    }
+      }
   }); 
   router.get("/carrito", function(req,res,next){
     const userId = req.session.userId;
@@ -147,24 +147,33 @@ router.post("/comprar", function(req, res, next){
     const userId = req.session.userId;
     if(!userId) res.redirect("/login");
     else{
-      Carrito.findOne({where:{userId},include:[Producto]})
-      .then(carrito=>{
-        const productos =carrito.productos;
-      if (productos.every(p => p.existencias >=p.productocarrito.cantidad)){
-
-    
-      }else{
+      sequelize.transaction(t=>{
+        return Carrito.findOne({where:{userId},include:[Producto]}, {transaction:t})
+        .then(carrito=> {
+          const productos =carrito.productos;
+         if (productos.every(p => p.existencias >=p.productocarrito.cantidad)){
+          return Pedido.create({userId,estado:'PDTE-PAGO'},{transaction:t})//creo el carrito
+         .then(pedido=>{
+           pedido.addProductos(productos,{transaction:t})//le añado los productos a la tabla Productos
+         .then(()=> carrito.removeProductos(productos,{transaction:t}))
+         .then(()=>t.commit())//los productos que queremos eliminar de la tabla Productos
+         .then(()=> res.redirect("/pedido/"+ pedido.id))        
+        });
+    }else{
         for(var i=0;i<productos.length;i++){
           productos[i].hayExistencias= productos[i].existencias >= productos[i].productocarrito.cantidad;
-        }
+       }
         
         const total = productos.reduce((total, p) => total + p.precio * p.productocarrito.cantidad, 0);
-    res.render("carrito",{productos,total});
-           }
-       } 
-    )
-
+        return t.rollback()
+        .then(()=>res.render("carrito",{productos,total}));
     }
-   });
+  })
+
+    })
+  }
+});
+ 
+   
 module.exports = router;
 
